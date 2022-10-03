@@ -21,7 +21,7 @@
             </a>
           </li>
           <li>
-            <a href="components-accordion.html">
+            <a href="/instant/admin-panel/instractor/list.php">
               <i class="bi bi-circle"></i><span>list</span>
             </a>
           </li>

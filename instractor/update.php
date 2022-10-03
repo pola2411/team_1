@@ -4,23 +4,36 @@ include('../shared/head.php');
 include('../shared/nav.php');
 include('../shared/aside.php');
 include('../general/connection.php');
+include('../general/function.php');
 $s = "SELECT * FROM `track`";
 $s_q = mysqli_query($con, $s);
 $errors = [];
+if(isset($_GET['update'])){
+$id=$_GET['update'];
+
+$s="SELECT instractor.id as inst_id,instractor.name,instractor.email,instractor.phone,instractor.address,instractor.image,track.title,track.id as tr_id FROM `instractor` JOIN track ON instractor.track_id=track.id WHERE  instractor.id=$id";
+$q_s=mysqli_query($con,$s);
+$row=mysqli_fetch_assoc($q_s);
 if (isset($_POST['send'])) {
-  $name = $_POST['name'];
-  $phone = strip_tags($_POST['phone']);
-  $address = strip_tags($_POST['address']);
-  $email = strip_tags($_POST['email']);
-  $password = strip_tags($_POST['password']);
-  $new_pass = sha1($password);
-  $track_id = $_POST['track_id'];
-  $image_name = time() . $_FILES['image']['name'];
-  $tmp_name = $_FILES['image']['tmp_name'];
-  $type = $_FILES['image']['type'];
-  $size = $_FILES['image']['size'];
+    $name = $_POST['name'];
+    $phone = strip_tags($_POST['phone']);
+    $address = strip_tags($_POST['address']);
+    $email = strip_tags($_POST['email']);
+    $track_id = $_POST['track_id'];
+    if(empty($_FILES['image']['name'])){
+        $image_name=$row['image'];
+    }else{
+    $image_name = time() . $_FILES['image']['name'];
+    $tmp_name = $_FILES['image']['tmp_name'];
+    $type = $_FILES['image']['type'];
+    $size = $_FILES['image']['size'];
+    if (($type == "image/jpeg") || ($type == "image/png") || ($type == "image/jpg")) {
+    } else {
+      $errors[] = "you must enter img type png jpg jpeg ";
+    }
+    }
 
-
+    
   if (trim($name) == "") {
     $errors[] = "please enter name";
   }
@@ -33,37 +46,36 @@ if (isset($_POST['send'])) {
   if (trim($email) == "") {
     $errors[] = "please enter email";
   }
-  if (trim($password) == "") {
-    $errors[] = "please enter password";
-  }
-  if (($size / 1024) / 1024 > 1) {
-    $errors[]= "you must enter img less than 1:M";
-  }
 
-  if (($type == "image/jpeg") || ($type == "image/png") || ($type == "image/jpg")) {
-  } else {
-    $errors[] = "you must enter img type png jpg jpeg ";
-  }
-
-
-
-
-
-
-  if (empty($errors)) {
+  if(empty($errors)){
     $location = "./upload/$image_name";
     move_uploaded_file($tmp_name, $location);
-    $i = "INSERT INTO `instractor`(`id`, `name`, `email`, `password`, `phone`, `address`, `image`, `track_id`) VALUES (null,'$name','$email','$new_pass','$phone','$address','$image_name',$track_id)";
-    $q_i = mysqli_query($con, $i);
-  }
+    $u="UPDATE `instractor` SET `name`='$name',`email`='$email',`phone`='$phone',`address`='$address',`image`='$image_name',`track_id`='$track_id 'WHERE id=$id";
+$q=mysqli_query($con,$u);
+if($q){
+    go("/instractor/list.php");
 }
 
 
+  }
+
+
+
+
+
+
+
+}}
+
+
+
 ?>
+
 <main id="main" class="main">
-  <div class="container">
+
+<div class="container">
     <div class="card">
-      <?php if (empty($errors)) {
+    <?php if (empty($errors)) {
       } else { ?>
         <div class="alert alert-danger" role="alert">
           <ul>
@@ -74,30 +86,26 @@ if (isset($_POST['send'])) {
           </ul>
         </div>
       <?php } ?>
-
       <div class="card-body">
         <form method="POST" enctype="multipart/form-data">
 
           <div class="form-group">
             <label for="exampleInputEmail1">Full Name</label>
-            <input type="text" name="name" class="form-control" id="exampleInputEmail1" aria-describedby="emailHelp">
+            <input type="text" name="name" value="<?= $row['name'] ?>" class="form-control" id="exampleInputEmail1" aria-describedby="emailHelp">
           </div>
           <div class="form-group">
             <label for="exampleInputEmail1">Phone</label>
-            <input type="text" name="phone" class="form-control" id="exampleInputEmail1" aria-describedby="emailHelp">
+            <input type="text" name="phone" value=" <?= $row['phone'] ?>" class="form-control" id="exampleInputEmail1" aria-describedby="emailHelp">
           </div>
           <div class="form-group">
             <label for="exampleInputEmail1">Address</label>
-            <input type="text" name="address" class="form-control" id="exampleInputEmail1" aria-describedby="emailHelp">
+            <input type="text" name="address" value=" <?= $row['address'] ?>" class="form-control" id="exampleInputEmail1" aria-describedby="emailHelp">
           </div>
           <div class="form-group">
             <label for="exampleInputEmail1">Email</label>
-            <input type="email" name="email" class="form-control" id="exampleInputEmail1" aria-describedby="emailHelp">
+            <input type="email" name="email" value=" <?= $row['email'] ?>" class="form-control" id="exampleInputEmail1" aria-describedby="emailHelp">
           </div>
-          <div class="form-group">
-            <label for="exampleInputPassword1">Password</label>
-            <input type="password" name="password" class="form-control" id="exampleInputPassword1">
-          </div>
+        
           <div class="form-group">
             <label for="exampleInputEmail1">image</label>
             <input type="file" name="image" class="form-control" id="exampleInputEmail1" aria-describedby="emailHelp">
@@ -106,6 +114,8 @@ if (isset($_POST['send'])) {
             <label for="exampleInputEmail1">track</label>
 
             <select class="form-control" name="track_id">
+            <option value="<?= $row['tr_id'] ?>"><?= $row['title'] ?></option>
+           
               <?php foreach ($s_q as $data) { ?>
                 <option value="<?= $data['id'] ?>"><?= $data['title'] ?></option>
               <?php } ?>
@@ -121,6 +131,13 @@ if (isset($_POST['send'])) {
     </div>
 
   </div>
+
+
+
+
+
+
+
 </main>
 
 
@@ -128,7 +145,7 @@ if (isset($_POST['send'])) {
 
 
 
-<?php
+<?php 
 
 include('../shared/footer.php');
 include('../shared/script.php');
