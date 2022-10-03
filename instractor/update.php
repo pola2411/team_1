@@ -50,7 +50,7 @@ if (isset($_POST['send'])) {
   if(empty($errors)){
     $location = "./upload/$image_name";
     move_uploaded_file($tmp_name, $location);
-    $u="UPDATE `instractor` SET `name`='$name',`email`='$email',`phone`='$phone',`address`='$address',`image`='$image_name',`track_id`='$track_id 'WHERE id=$id";
+    $u="UPDATE `instractor` SET `name`='$name',`email`='$email',`phone`='$phone',`address`='$address',`image`='$image_name',`track_id`='$track_id'WHERE id=$id";
 $q=mysqli_query($con,$u);
 if($q){
     go("/instractor/list.php");
