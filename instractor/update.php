@@ -23,8 +23,10 @@ if (isset($_POST['send'])) {
     if(empty($_FILES['image']['name'])){
         $image_name=$row['image'];
     }else{
+      unlink("./upload/$row[image]");
     $image_name = time() . $_FILES['image']['name'];
     $tmp_name = $_FILES['image']['tmp_name'];
+    
     $type = $_FILES['image']['type'];
     $size = $_FILES['image']['size'];
     if (($type == "image/jpeg") || ($type == "image/png") || ($type == "image/jpg")) {
@@ -114,10 +116,13 @@ if($q){
             <label for="exampleInputEmail1">track</label>
 
             <select class="form-control" name="track_id">
-            <option value="<?= $row['tr_id'] ?>"><?= $row['title'] ?></option>
+           
            
               <?php foreach ($s_q as $data) { ?>
-                <option value="<?= $data['id'] ?>"><?= $data['title'] ?></option>
+                
+                <option value="<?= $data['id'] ?>" <?php if($data['id']== $row['tr_id']){
+                  echo"selected";
+                } ?> ><?= $data['title'] ?></option>
               <?php } ?>
 
 
