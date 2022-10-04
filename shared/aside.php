@@ -68,6 +68,16 @@
               <i class="bi bi-circle"></i><span>List Diploma</span>
             </a>
           </li>
+          <li>
+            <a href="/instant/admin-panel/groups/add.php">
+              <i class="bi bi-circle"></i><span>groups</span>
+            </a>
+          </li>
+          <li>
+            <a href="/instant/admin-panel/dip_with_instractor/add.php">
+              <i class="bi bi-circle"></i><span>dip with instractor</span>
+            </a>
+          </li>
         </ul>
       </li><!-- End Forms Nav -->
       <li class="nav-item">
@@ -87,6 +97,24 @@
           </li> -->
         </ul>
       </li>
+      <li class="nav-item">
+        <a class="nav-link collapsed" data-bs-target="#icons-nav" data-bs-toggle="collapse" href="#">
+          <i class="bi bi-gem"></i><span>tasks</span><i class="bi bi-chevron-down ms-auto"></i>
+        </a>
+        <ul id="icons-nav" class="nav-content collapse " data-bs-parent="#sidebar-nav">
+          <li>
+            <a href="/instant/admin-panel//tasks/add.php">
+              <i class="bi bi-circle"></i><span>Add</span>
+            </a>
+          </li>
+          <li>
+            <a href="/instant/admin-panel//tasks/list.php">
+              <i class="bi bi-circle"></i><span>List</span>
+            </a>
+          </li>
+         
+        </ul>
+      </li><!-- End Icons Nav -->
       <!-- End Tables Nav -->
       <li class="nav-heading">Pages</li>
       <li class="nav-item">
